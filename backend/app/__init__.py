@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-
+from .app import api
 
 config_variable_name = 'FLASK_CONFIG_PATH'
 default_config_path = os.path.join(os.path.dirname(__file__), '../config/local.py')
@@ -11,6 +11,8 @@ def init_app(app):
     from .database import db, migrate
     db.init_app(app)
     migrate.init_app(app, db)
+
+    app.register_blueprint(api, url_prefix='/')
 
 
 def create_app(config_file=None):
