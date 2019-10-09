@@ -1,4 +1,10 @@
-#/bin/sh
-tshark -l -Ini wlan1 -w cap.pcap -a duration:10
-python3 report.py -f cap.pcap
-rm cap.pcap
+#/bin/bash
+{
+    . ./.env
+    echo "[$(date)] Start monitoring with ${CARD}"
+    tshark -l -Ini ${CARD} -w cap.pcap -a duration:${SCAN_TIME} || echo "[$(date)] Failed. Exiting."; exit 1
+    echo "[$(date)] Reporting"
+    python3 report.py -f cap.pcap
+    rm cap.pcap
+    echo "[$(date)] Finished."
+} >> log 2>&1
