@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import PrimaryAppBar from "./appBar";
+import CampusMap from "./campusMap";
 
 function Copyright () {
   return (
@@ -30,8 +31,13 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto',
   },
   container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
+    [theme.breakpoints.between('sm','xl')]: {
+      height: 'calc(100% - 64px)',
+    },
+    [theme.breakpoints.only('xs')]: {
+      height: 'calc(100% - 56px)',
+    },
+    padding: 0
   },
 }));
 
@@ -43,8 +49,8 @@ export default function App () {
       <PrimaryAppBar/>
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
-        <Container maxWidth="lg" className={classes.container}>
-
+        <Container maxWidth="xl" className={classes.container}>
+          <CampusMap/>
         </Container>
         <Copyright/>
       </main>
