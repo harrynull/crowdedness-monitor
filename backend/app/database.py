@@ -48,9 +48,8 @@ class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128))
     devices = db.relationship("Device", back_populates="location")
-    coordinate_x = db.Column(db.Float)
-    coordinate_y = db.Column(db.Float)
+    coordinates = db.Column(db.String(256))
 
     def export(self):
-        ret = {'id': self.id, 'name': self.name, 'x': self.coordinate_x, 'y': self.coordinate_y}
+        ret = {'id': self.id, 'name': self.name, 'coordinates': self.coordinates}
         return ret

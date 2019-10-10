@@ -46,13 +46,12 @@ def register_location():
         return unauthorized_request()
 
     db.session.add(Location(name=get_arg('name'),
-                            coordinate_x=get_arg('x'),
-                            coordinate_y=get_arg('y')))
+                            coordinates=get_arg('coordinates')))
     db.session.commit()
     return jsonify({"success": True})
 
 
-@api.route('/data/report', methods=["GET","POST"])
+@api.route('/data/report', methods=["GET", "POST"])
 def report():
     current_time = int(time.time())
     packet_count = get_arg("packet_count")
@@ -80,6 +79,7 @@ def export():
     return jsonify({"success": True, "data": [d.export(True) for d in Data.query.all()]})
 
 
+# TODO: to optimize, send coordinates only when requested.
 @api.route('/data/current', methods=["GET", "POST"])
 def get_current_data():
     data = {}
