@@ -52,7 +52,7 @@ def register_location():
     return jsonify({"success": True})
 
 
-@api.route('/data/report', methods=["POST"])
+@api.route('/data/report', methods=["GET","POST"])
 def report():
     current_time = int(time.time())
     packet_count = get_arg("packet_count")
@@ -64,7 +64,7 @@ def report():
     # TODO: get location id from the device id
     location_id = 1
 
-    db.session.add(Data(time=current_time, device=device_id,
+    db.session.add(Data(time=current_time, device_id=device_id,
                         packet_count=packet_count, mac_count=mac_count,
                         universal_mac_count=universal_mac_count,
                         crowdedness=generate_crowdedness(packet_count, mac_count, universal_mac_count,
@@ -89,3 +89,9 @@ def get_current_data():
         for device in location.devices:
             data[location.name]['devices'].append(device.export())
     return jsonify({"success": True, "data": data})
+
+
+# TODO: get historical/predictive data. Parameters: location_id, from_time, to_time
+@api.route('/data/time_range', methods=["GET", "POST"])
+def get_data_time_range():
+    return jsonify({"success": True, "data": {}})

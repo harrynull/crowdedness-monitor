@@ -52,5 +52,5 @@ class Location(db.Model):
     coordinate_y = db.Column(db.Float)
 
     def export(self):
-        ret = {'name': self.name, 'x': self.coordinate_x, 'y': self.coordinate_y}
+        ret = {'id': self.id, 'name': self.name, 'x': self.coordinate_x, 'y': self.coordinate_y}
         return ret
