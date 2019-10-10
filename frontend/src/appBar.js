@@ -64,6 +64,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     whiteSpace: 'nowrap',
     width: drawerWidth,
+    height: '100vh',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -76,24 +77,21 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing(9),
+    [theme.breakpoints.only('xs')]: {
+      width: theme.spacing(0),
     },
   },
 }));
 
 export default function PrimaryAppBar () {
-
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
   const handleDrawerOpen = () => {
     setOpen(true);
   };
-
   return (
     <div>
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
@@ -108,7 +106,7 @@ export default function PrimaryAppBar () {
             <MenuIcon/>
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            Crowdedness Monitor
           </Typography>
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
