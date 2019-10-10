@@ -14,6 +14,7 @@ class Device(db.Model):
     location_id = db.Column(db.Integer, db.ForeignKey('locations.id'))
     location = db.relationship("Location", back_populates="devices")
     token = db.Column(db.String(64))
+    ip = db.Column(db.String(20))
 
     def export(self):
         ret = {'name': self.name, 'mac_address': self.mac_address, 'detailed_location': self.detailed_location,

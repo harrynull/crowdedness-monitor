@@ -95,3 +95,6 @@ def get_current_data():
 @api.route('/data/time_range', methods=["GET", "POST"])
 def get_data_time_range():
     return jsonify({"success": True, "data": {}})
+
+# TODO: add an API that allows the device to report their ip address
+# Parameter: ip, token. device.ip = ip where device.token = token.
