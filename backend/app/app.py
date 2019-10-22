@@ -96,5 +96,44 @@ def get_current_data():
 def get_data_time_range():
     return jsonify({"success": True, "data": {}})
 
-# TODO: add an API that allows the device to report their ip address
 # Parameter: ip, token. device.ip = ip where device.token = token.
+@api.route('/data/ip', methods=["GET", "POST"])
+def update_ip():
+    device = Device.query.filter_by(token=get_arg("token")).first()
+    if device is None:
+        return jsonify({"success": False})
+    device.ip = get_arg("ip")
+    db.session.commit()
+    return jsonify({"success": True, "data": {}})
+
+
+@api.route('/manage/')
+def admin():
+    # TODO: test cookie to authenticate
+    devices = Device.query.all()
+    # TODO: should use a template instead. hack for debug purpose
+
+    content = """<style>body{padding:5% 10%;}td{text-align: center;}</style>"""\
+              '<table style="width:100%">'
+    content += """
+    <tr><th>ID</th>
+    <th>Location</th>
+    <th>Name</th>
+    <th>MAC Address</th>
+    <th>IP</th>
+    <th>Last Reported Data</th>
+    </tr>"""
+    for device in devices:
+        data: Data = device.get_last_data()
+        last_data = "None"
+        if data is not None:
+            from datetime import datetime
+            last_data = str.format("{} - {}/{} ({})", data.crowdedness, data.mac_count, data.universal_mac_count,
+                                   datetime.utcfromtimestamp(data.time).strftime('%Y-%m-%d %H:%M:%S'))
+
+        content += str.format("<tr><td>{}</td><td>{} - {}</td><td>{}</td><td>{}</td><td>{}</td>"
+                              "<td>{}</td></tr>",
+                              device.id, device.location.name, device.detailed_location,
+                              device.name, device.mac_address, device.ip, last_data)
+    content += '</table>'
+    return content
