@@ -104,7 +104,7 @@ def update_ip():
         return jsonify({"success": False})
     device.ip = get_arg("ip")
     db.session.commit()
-    return jsonify({"success": True, "data": {}})
+    return jsonify({"success": True, "data": {"ip": device.ip}})
 
 
 @api.route('/manage/')
