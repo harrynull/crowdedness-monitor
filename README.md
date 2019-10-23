@@ -36,9 +36,11 @@ SE 101 Project
 
 ### Backend
 ```
+apt update && apt install libmysqlclient-dev
 cd backend
+python3 -m venv venv
 venv/Scripts/activate
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 touch var/test.db
 flask db upgrade
 flask run

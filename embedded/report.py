@@ -21,3 +21,4 @@ data = {'packet_count': pkg_count, 'mac_count': mac_count, 'universal_mac_count'
 ret = requests.post(REPORT_ADDR + "/data/report", data=data).json()
 if not ret['success']:
     print("Report failed:", ret)
+print("Report success!", ret)
