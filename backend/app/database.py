@@ -17,6 +17,7 @@ class Device(db.Model):
     ip = db.Column(db.String(20))
 
     def export(self):
+        # TODO: check if get_last_data exists
         ret = {'name': self.name, 'mac_address': self.mac_address, 'detailed_location': self.detailed_location,
                'location': self.location.name, 'last_data': self.get_last_data().export(False)}
         return ret
