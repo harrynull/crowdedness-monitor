@@ -64,7 +64,6 @@ def report():
     device_id = device.id
     location_id = device.location_id
 
-
     db.session.add(Data(time=current_time, device_id=device_id,
                         packet_count=packet_count, mac_count=mac_count,
                         universal_mac_count=universal_mac_count,
