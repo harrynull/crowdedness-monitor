@@ -1,12 +1,59 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Typography from '@material-ui/core/Typography';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Progress from "./Progress";
-import {Box, Avatar} from "@material-ui/core";
+import DensityProgressBar from "./Progress";
+import {
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+  ExpansionPanel,
+  Typography,
+  Box,
+  Avatar
+} from "@material-ui/core";
+
+export default function Panel (props) {
+  const classes = useStyles();
+  const panels = props.locations.map((location) =>
+    <ExpansionPanel key={location.id.toString()}>
+      <ExpansionPanelSummary
+        expandIcon={<ExpandMoreIcon/>}
+        aria-controls="panel1a-content"
+        id="panel1a-header">
+        <Box className={classes.summaryBox}>
+          <Avatar aria-label="recipe" className={classes.avatar}>
+            {location.name.toString().substr(0, 1)}
+          </Avatar>
+        </Box>
+        <Box className={classes.summaryBox}>
+          <Typography className={classes.subHeading} color="textSecondary">
+            {/*{location.isOpen ? "OPEN" : "CLOSED"}*/}
+            OPEN
+          </Typography>
+          <Typography className={classes.heading}>
+            {location.name}
+          </Typography>
+        </Box>
+        <Box className={classes.percentBox}>
+          <Typography className={classes.percent}>
+            {location.devices[0].crowdedness}%
+          </Typography>
+          <DensityProgressBar
+            // TODO Change Color
+            color={"primary"}
+            density={location.devices[0].crowdedness}/>
+        </Box>
+      </ExpansionPanelSummary>
+      <ExpansionPanelDetails>
+        <Box className={classes.detailBox}>
+          {/*TODO*/}
+        </Box>
+      </ExpansionPanelDetails>
+    </ExpansionPanel>
+  );
+  return (
+    <ul>{panels}</ul>
+  );
+}
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -21,7 +68,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 30,
     fontSize: theme.typography.pxToRem(14),
     fontWeight: theme.typography.fontWeightRegular,
-    autoCapitalize: true,
+    textTransform: "uppercase",
   },
   heading: {
     marginLeft: 30,
@@ -52,42 +99,3 @@ const useStyles = makeStyles(theme => ({
     paddingTop: 6,
   },
 }));
-
-export default function SimpleExpansionPanel() {
-  const classes = useStyles();
-  return (
-    <div className={classes.root}>
-      <ExpansionPanel>
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header">
-          <Box className={classes.summaryBox}>
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            D
-          </Avatar>
-          </Box>
-          <Box className={classes.summaryBox}>
-            <Typography className={classes.subHeading} color="textSecondary">
-              OPEN
-            </Typography>
-            <Typography className={classes.heading}>
-              Davis Center
-            </Typography>
-          </Box>
-          <Box className={classes.percentBox}>
-            <Typography className={classes.percent}>
-              53%
-            </Typography>
-            <Progress/>
-          </Box>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Box className={classes.detailBox}>
-            //TODO
-          </Box>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-    </div>
-  );
-}
