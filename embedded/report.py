@@ -9,7 +9,6 @@ REPORT_ADDR = os.environ["REPORT_ADDR"]
 
 
 parser = argparse.ArgumentParser(description='Scan nearby wifi devices')
-parser.add_argument('-i', type=str, help='Specify interface')
 parser.add_argument('-f', type=str, help='Read from files')
 args = parser.parse_args()
 

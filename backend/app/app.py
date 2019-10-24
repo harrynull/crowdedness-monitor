@@ -25,6 +25,7 @@ def hello():
     return jsonify({"success": True})
 
 
+# http://127.0.0.1:5000/manage/register_device?key=test&mac_address=123&name=test&detailed_location=2f&location_id=1
 @api.route('/manage/register_device', methods=["GET", "POST"])
 def register_device():
     if not check_authorization():
@@ -40,6 +41,7 @@ def register_device():
     return jsonify({"success": True, "token": token})
 
 
+# http://127.0.0.1:5000/manage/register_location?key=test&name=test_building&coordinates=123,123
 @api.route('/manage/register_location', methods=["GET", "POST"])
 def register_location():
     if not check_authorization():
@@ -51,6 +53,7 @@ def register_location():
     return jsonify({"success": True})
 
 
+# http://127.0.0.1:5000/data/report?packet_count=10&mac_count=10&universal_mac_count=10&token=123
 @api.route('/data/report', methods=["GET", "POST"])
 def report():
     current_time = int(time.time())
@@ -73,22 +76,31 @@ def report():
     return jsonify({"success": True})
 
 
+# http://127.0.0.1/data/export?key=test
 @api.route('/data/export', methods=["GET", "POST"])
 def export():
     if not check_authorization():
         return unauthorized_request()
+    # TODO: filter the data by device_id
+    # you need to add a new parameter (get_arg) and change the "Data.query.all()" in the following line.
     return jsonify({"success": True, "data": [d.export(True) for d in Data.query.all()]})
 
 
-# TODO: to optimize, send coordinates only when requested.
+# http://127.0.0.1/data/current
 @api.route('/data/current', methods=["GET", "POST"])
 def get_current_data():
-    data = {}
+    data = []
     for location in Location.query.all():
-        data[location.name] = location.export()
-        data[location.name]['devices'] = []
+        location_object = location.export()
+        location_object['devices'] = []
         for device in location.devices:
-            data[location.name]['devices'].append(device.export())
+            device_info = {'name': device.name, 'detailed_location': device.detailed_location, 'crowdedness': 0, 'last_updated': 0}
+            last_data: Data = device.get_last_data()
+            if last_data is not None:
+                device_info['crowdedness'] = last_data.crowdedness
+                device_info['last_updated'] = last_data.time
+            location_object['devices'].append(device_info)
+        data.append(location_object)
     return jsonify({"success": True, "data": data})
 
 
@@ -131,7 +143,7 @@ def admin():
             from datetime import datetime
             last_data = str.format("{} - {}/{} ({})", data.crowdedness, data.mac_count, data.universal_mac_count,
                                    datetime.utcfromtimestamp(data.time).strftime('%Y-%m-%d %H:%M:%S'))
-
+        # TODO: localize the time?
         content += str.format("<tr><td>{}</td><td>{} - {}</td><td>{}</td><td>{}</td><td>{}</td>"
                               "<td>{}</td></tr>",
                               device.id, device.location.name, device.detailed_location,
