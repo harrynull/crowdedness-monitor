@@ -89,14 +89,18 @@ def export():
 # http://127.0.0.1/data/current
 @api.route('/data/current', methods=["GET", "POST"])
 def get_current_data():
-    # TODO: change this function so that the output does not include
-    # our devices' mac addresses and no device_id in "last_data"
-    data = {}
+    data = []
     for location in Location.query.all():
-        data[location.name] = location.export()
-        data[location.name]['devices'] = []
+        location_object = location.export()
+        location_object['devices'] = []
         for device in location.devices:
-            data[location.name]['devices'].append(device.export())
+            device_info = {'name': device.name, 'detailed_location': device.detailed_location, 'crowdedness': 0, 'last_updated': 0}
+            last_data: Data = device.get_last_data()
+            if last_data is not None:
+                device_info['crowdedness'] = last_data.crowdedness
+                device_info['last_updated'] = last_data.time
+            location_object['devices'].append(device_info)
+        data.append(location_object)
     return jsonify({"success": True, "data": data})
 
 
