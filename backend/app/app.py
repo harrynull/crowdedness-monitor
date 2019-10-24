@@ -29,8 +29,8 @@ def hello():
 def register_device():
     if not check_authorization():
         return unauthorized_request()
-    # TODO: generate a token
-    token = '123'
+    import uuid
+    token = str(uuid.uuid4())
     db.session.add(Device(mac_address=get_arg('mac_address'),
                           name=get_arg('name'),
                           detailed_location=get_arg('detailed_location'),
