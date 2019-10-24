@@ -11,7 +11,7 @@ import clsx from "clsx";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
-import {mainListItems, secondaryListItems} from "./menuItems";
+import {mainListItems, secondaryListItems} from "./MenuItems";
 import Drawer from "@material-ui/core/Drawer";
 
 const drawerWidth = 240;

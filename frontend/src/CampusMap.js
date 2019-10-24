@@ -24,7 +24,6 @@ function getGeoColor (d) {
 }
 
 function getGeoStyle (feature) {
-  console.log(feature);
   return {
     fillColor: getGeoColor(feature.properties.density),
     weight: 2,
@@ -42,7 +41,7 @@ function getGeoJson () {
       {
         "type": "Feature",
         "properties": {
-          density: 7
+          density: 0
         },
         "geometry": {
           "type": "Polygon",
