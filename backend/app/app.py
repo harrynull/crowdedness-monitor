@@ -58,10 +58,12 @@ def report():
     mac_count = get_arg("mac_count")
     universal_mac_count = get_arg("universal_mac_count")
     token = get_arg("token")
-    # TODO: get the device id associated with the token, or return error if not found.
-    device_id = 1
-    # TODO: get location id from the device id
-    location_id = 1
+    device = Device.query.filter_by(token=token).first()
+    if device is None:
+        return jsonify({"success": False})
+    device_id = device.id
+    location_id = device.location_id
+
 
     db.session.add(Data(time=current_time, device_id=device_id,
                         packet_count=packet_count, mac_count=mac_count,
