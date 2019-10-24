@@ -1,5 +1,5 @@
 #/bin/bash
-filename="cap_$EPOCHSECONDS"
+filename="cap_$(date +%Y_%m_%d_%H_%M_%S)"
 {
     . ./.env
     echo "[$(date)] Start monitoring with ${CARD} $filename"
