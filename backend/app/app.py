@@ -25,6 +25,7 @@ def hello():
     return jsonify({"success": True})
 
 
+# http://127.0.0.1:5000/manage/register_device?key=test&mac_address=123&name=test&detailed_location=2f&location_id=1
 @api.route('/manage/register_device', methods=["GET", "POST"])
 def register_device():
     if not check_authorization():
@@ -40,6 +41,7 @@ def register_device():
     return jsonify({"success": True, "token": token})
 
 
+# http://127.0.0.1:5000/manage/register_location?key=test&name=test_building&coordinates=123,123
 @api.route('/manage/register_location', methods=["GET", "POST"])
 def register_location():
     if not check_authorization():
@@ -51,6 +53,7 @@ def register_location():
     return jsonify({"success": True})
 
 
+# http://127.0.0.1:5000/data/report?packet_count=10&mac_count=10&universal_mac_count=10&token=123
 @api.route('/data/report', methods=["GET", "POST"])
 def report():
     current_time = int(time.time())
@@ -73,15 +76,21 @@ def report():
     return jsonify({"success": True})
 
 
+# http://127.0.0.1/data/export?key=test
 @api.route('/data/export', methods=["GET", "POST"])
 def export():
     if not check_authorization():
         return unauthorized_request()
+    # TODO: filter the data by device_id
+    # you need to add a new parameter (get_arg) and change the "Data.query.all()" in the following line.
     return jsonify({"success": True, "data": [d.export(True) for d in Data.query.all()]})
 
 
+# http://127.0.0.1/data/current
 @api.route('/data/current', methods=["GET", "POST"])
 def get_current_data():
+    # TODO: change this function so that the output does not include
+    # our devices' mac addresses and no device_id in "last_data"
     data = {}
     for location in Location.query.all():
         data[location.name] = location.export()
