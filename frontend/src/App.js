@@ -4,8 +4,8 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
-import PrimaryAppBar from "./appBar";
-import CampusMap from "./campusMap";
+import PrimaryAppBar from "./AppBar";
+import SimpleExpansionPanel from "./Panel";
 
 function Copyright () {
   return (
@@ -23,21 +23,24 @@ function Copyright () {
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    overflow: 'hidden'
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     height: '100vh',
-    overflow: 'auto',
+    overflowY: 'scroll',
   },
   container: {
-    [theme.breakpoints.between('sm','xl')]: {
-      height: 'calc(100% - 64px)',
-    },
-    [theme.breakpoints.only('xs')]: {
-      height: 'calc(100% - 56px)',
-    },
-    padding: 0
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+    paddingRight: '15px',
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
   },
 }));
 
@@ -49,8 +52,9 @@ export default function App () {
       <PrimaryAppBar/>
       <main className={classes.content}>
         <div className={classes.appBarSpacer}/>
-        <Container maxWidth="xl" className={classes.container}>
-          <CampusMap/>
+        <Container maxWidth="md" className={classes.container}>
+          {/*<CampusMap/>*/}
+          <SimpleExpansionPanel/>
         </Container>
         <Copyright/>
       </main>
