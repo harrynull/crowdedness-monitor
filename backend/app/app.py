@@ -130,7 +130,7 @@ def admin():
             from datetime import datetime
             last_data = str.format("{} - {}/{} ({})", data.crowdedness, data.mac_count, data.universal_mac_count,
                                    datetime.utcfromtimestamp(data.time).strftime('%Y-%m-%d %H:%M:%S'))
-
+        # TODO: localize the time?
         content += str.format("<tr><td>{}</td><td>{} - {}</td><td>{}</td><td>{}</td><td>{}</td>"
                               "<td>{}</td></tr>",
                               device.id, device.location.name, device.detailed_location,
