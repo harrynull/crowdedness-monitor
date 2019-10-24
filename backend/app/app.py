@@ -80,7 +80,6 @@ def export():
     return jsonify({"success": True, "data": [d.export(True) for d in Data.query.all()]})
 
 
-# TODO: to optimize, send coordinates only when requested.
 @api.route('/data/current', methods=["GET", "POST"])
 def get_current_data():
     data = {}
