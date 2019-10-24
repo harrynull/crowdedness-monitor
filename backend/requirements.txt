@@ -2,3 +2,5 @@ SQLAlchemy
 flask
 flask-sqlalchemy
 Flask-Migrate
+mysqlclient
+python-dotenv

@@ -27,9 +27,27 @@ SE 101 Project
 ## Install
 
 ### Embedded
+`cd ./embedded/ && ./setup.sh`
+
+* `bootstrap.sh` will be run every time the system boots.
+* `run.sh` will be run every 5 minutes (a fixed interval).
+* `.env` stores relevant variables.
+* `log` stores logs.
 
 ### Backend
+```
+apt update && apt install libmysqlclient-dev
+cd backend
+python3 -m venv venv
+venv/Scripts/activate
+pip3 install -r requirements.txt
+touch var/test.db
+flask db upgrade
+flask run
+```
+Recommended IDE: PyCharm Professional
 
 ### Frontend
+[Frontend](https://git.uwaterloo.ca/STAZZ/crowdedness-monitor/tree/master/frontend)
 
 ## License
