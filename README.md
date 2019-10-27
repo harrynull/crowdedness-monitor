@@ -27,7 +27,23 @@ SE 101 Project
 ## Install
 
 ### Embedded
-`cd ./embedded/ && ./setup.sh`
+```
+sudo apt update && sudo apt install vim tshark # select allow non-superuser to use wireshark
+sudo usermod -a -G wireshark pi
+```
+
+Add the following line to `sudo visudo`:
+```
+pi ALL= NOPASSWD: /home/pi/crowdedness-monitor/embedded/bootstrap.sh
+```
+
+Add the following line to `crontab -e`:
+```
+*/5 * * * * cd /home/pi/crowdedness-monitor/embedded/ && ./run.sh
+@reboot sleep 30 && cd /home/pi/crowdedness-monitor/embedded/ && sudo ./bootstrap.sh
+```
+
+Lastly, edit `embedded/.env`.
 
 * `bootstrap.sh` will be run every time the system boots.
 * `run.sh` will be run every 5 minutes (a fixed interval).

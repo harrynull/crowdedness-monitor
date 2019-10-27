@@ -2,6 +2,7 @@ import time
 
 from flask import Blueprint, jsonify, make_response, current_app, request
 
+from app.crossdomain import crossdomain
 from app.database import Data, db, Device, Location
 from data_analyzer.crowdedness import generate_crowdedness
 
@@ -88,6 +89,7 @@ def export():
 
 # http://127.0.0.1/data/current
 @api.route('/data/current', methods=["GET", "POST"])
+@crossdomain(origin='*')
 def get_current_data():
     data = []
     for location in Location.query.all():
@@ -106,8 +108,10 @@ def get_current_data():
 
 # TODO: get historical/predictive data. Parameters: location_id, from_time, to_time
 @api.route('/data/time_range', methods=["GET", "POST"])
+@crossdomain(origin='*')
 def get_data_time_range():
     return jsonify({"success": True, "data": {}})
+
 
 # Parameter: ip, token. device.ip = ip where device.token = token.
 @api.route('/data/ip', methods=["GET", "POST"])
