@@ -4,10 +4,13 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import Copyright from "./Copyright";
 import PrimaryAppBar from "./AppBar";
 import Panel from "./Panel";
+import './index.css'
 import {
   CssBaseline,
   Container,
 } from '@material-ui/core';
+
+export const FONT_FAMILY = 'Rubik';
 
 class App extends Component {
   state = {
@@ -42,7 +45,7 @@ class App extends Component {
           <Container maxWidth="md" className={classes.container}>
             <Panel locations={this.state.data}/>
           </Container>
-          <Copyright/>
+          {/*<Copyright/>*/}
         </main>
       </div>
     );
@@ -60,10 +63,17 @@ const styles = theme => ({
     height: '100vh',
     overflowY: 'scroll',
     paddingRight: '3px',
+    [theme.breakpoints.between('xs', 'sm')]: {
+      minWidth: "90%"
+    }
   },
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
+    [theme.breakpoints.between('xs', 'sm')]: {
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+    }
   },
   paper: {
     padding: theme.spacing(2),

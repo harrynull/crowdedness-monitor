@@ -11,8 +11,9 @@ import clsx from "clsx";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
-import {mainListItems, secondaryListItems} from "./MenuItems";
+import {MainListItems, SecondaryListItems} from "./MenuItems";
 import Drawer from "@material-ui/core/Drawer";
+import {FONT_FAMILY} from "./App";
 
 export default function PrimaryAppBar () {
   const classes = useStyles();
@@ -25,7 +26,10 @@ export default function PrimaryAppBar () {
   };
   return (
     <div>
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar color="inherit"
+              position="absolute"
+              elevation={2}
+              className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
@@ -59,9 +63,9 @@ export default function PrimaryAppBar () {
           </IconButton>
         </div>
         <Divider/>
-        <List>{mainListItems}</List>
+        <List>{MainListItems()}</List>
         <Divider/>
-        <List>{secondaryListItems}</List>
+        <List>{SecondaryListItems()}</List>
       </Drawer>
     </div>
   );
@@ -71,6 +75,7 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   appBar: {
+    fontFamily: FONT_FAMILY,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -95,7 +100,10 @@ const useStyles = makeStyles(theme => ({
     height: 240,
   },
   toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
+    paddingRight: 24,
+    [theme.breakpoints.only('xs')]: {
+      paddingRight: 6,
+    }
   },
   toolbarIcon: {
     display: 'flex',
@@ -105,13 +113,21 @@ const useStyles = makeStyles(theme => ({
     ...theme.mixins.toolbar,
   },
   menuButton: {
-    marginRight: 36,
+    marginRight: 8,
   },
   menuButtonHidden: {
     display: 'none',
   },
   title: {
     flexGrow: 1,
+    paddingLeft: 12,
+    fontFamily: FONT_FAMILY,
+    textTransform: "uppercase",
+    fontWeight: theme.typography.fontWeightMedium,
+    [theme.breakpoints.only('xs')]: {
+      paddingLeft: 0,
+      textAlign: 'center',
+    }
   },
   drawerPaper: {
     position: 'relative',
@@ -131,7 +147,7 @@ const useStyles = makeStyles(theme => ({
     }),
     width: theme.spacing(7),
     [theme.breakpoints.only('xs')]: {
-      width: theme.spacing(0),
+      width: theme.spacing(0.1),
     },
   },
 }));
