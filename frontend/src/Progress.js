@@ -1,36 +1,14 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-const useStyles = makeStyles({
-  root: {
-  },
-});
-
-export default function LinearDeterminate() {
-  const classes = useStyles();
-  const [completed, setCompleted] = React.useState(0);
-
-  React.useEffect(() => {
-    function progress() {
-      setCompleted(oldCompleted => {
-        if (oldCompleted === 100) {
-          return 0;
-        }
-        const diff = Math.random() * 10;
-        return Math.min(oldCompleted + diff, 100);
-      });
-    }
-
-    const timer = setInterval(progress, 500);
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
-
+export default function DensityProgressBar () {
+  const {classes} = this.props;
   return (
     <div className={classes.root}>
-      <LinearProgress color="secondary" variant="determinate" value={completed} />
+      <LinearProgress
+        variant="determinate"
+        color={this.props.color}
+        value={this.props.density}/>
     </div>
   );
 }
