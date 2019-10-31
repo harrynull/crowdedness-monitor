@@ -145,10 +145,14 @@ def admin():
         last_data = "None"
         if data is not None:
             from datetime import datetime
+            from pytz import timezone
+            timezonelist = ['Canada/Eastern','US/Eastern']
+            for zone in timezonelist:
+                now_time = datetime.now(timezone(zone))
             last_data = str.format("{} - {}/{} ({})", data.crowdedness, data.mac_count, data.universal_mac_count,
-                                   datetime.utcfromtimestamp(data.time).strftime('%Y-%m-%d %H:%M:%S'))
-        # TODO: localize the time?
-        content += str.format("<tr><td>{}</td><td>{} - {}</td><td>{}</td><td>{}</td><td>{}</td>"
+                                   now_time.strftime('%Y-%m-%d %H:%M:%S'))
+
+    content += str.format("<tr><td>{}</td><td>{} - {}</td><td>{}</td><td>{}</td><td>{}</td>"
                               "<td>{}</td></tr>",
                               device.id, device.location.name, device.detailed_location,
                               device.name, device.mac_address, device.ip, last_data)
