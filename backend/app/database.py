@@ -20,9 +20,14 @@ class Device(db.Model):
     parameters_obj = None
 
     def export(self):
-        # TODO: check if get_last_data exists
+        data: Data = self.get_last_data()
+        last_data = "None"
+
+        if data is not None:
+            last_data = data.export(False)
+
         ret = {'name': self.name, 'mac_address': self.mac_address, 'detailed_location': self.detailed_location,
-               'location': self.location.name, 'last_data': self.get_last_data().export(False)}
+                   'location': self.location.name, 'last_data': last_data}
         return ret
 
     def get_last_data(self):
