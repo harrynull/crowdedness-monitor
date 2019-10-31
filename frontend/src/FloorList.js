@@ -11,7 +11,7 @@ import CommentIcon from '@material-ui/icons/Comment';
 import DensityProgressBar from "./DensityProgressBar";
 import {ListItemAvatar} from "@material-ui/core";
 
-const ListHeight = 420;
+const ListHeight = 100;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,14 +74,21 @@ export default function FloorList () {
 
     setChecked(newChecked);
   };
+  // const list = [0, 1];
   const list = [0, 1];
-  // const list = [0, 1,2,3,4,5,6,7,8,9];
   return (
     <List className={classes.root}>
       {list.map(value => {
         const labelId = `checkbox-list-label-${value}`;
         return (
-          <ListItem classes={{ root: classes.item }} key={value} role={undefined} dense button onClick={handleToggle(value)}>
+          <ListItem
+            classes={{ root: classes.item }}
+            key={value}
+            role={undefined}
+            dense
+            button
+            onClick={handleToggle(value)}
+            disabled={true}>
             <ListItemAvatar>
               {value + 1} F
             </ListItemAvatar>

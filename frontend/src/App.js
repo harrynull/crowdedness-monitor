@@ -13,9 +13,7 @@ import {
 export const FONT_FAMILY = 'Rubik';
 
 class App extends Component {
-  state = {
-    data: [],
-  };
+  state = {data: []};
 
   componentDidMount () {
     this.fetchData();

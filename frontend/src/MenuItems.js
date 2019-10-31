@@ -34,24 +34,24 @@ export function MainListItems () {
 export function SecondaryListItems () {
   return (
     <div>
-      <ListSubheader inset style={text}>Saved reports</ListSubheader>
+      <ListSubheader inset style={text}>Historical Data</ListSubheader>
       <ListItem button>
         <ListItemIcon>
           <AssignmentIcon/>
         </ListItemIcon>
-        <ListItemText primary="Current month" primaryTypographyProps={{style: text}}/>
+        <ListItemText primary="This month" primaryTypographyProps={{style: text}}/>
       </ListItem>
       <ListItem button>
         <ListItemIcon>
           <AssignmentIcon/>
         </ListItemIcon>
-        <ListItemText primary="Last quarter" primaryTypographyProps={{style: text}}/>
+        <ListItemText primary="Last month" primaryTypographyProps={{style: text}}/>
       </ListItem>
       <ListItem button>
         <ListItemIcon>
           <AssignmentIcon/>
         </ListItemIcon>
-        <ListItemText primary="Year-end sale" primaryTypographyProps={{style: text}}/>
+        <ListItemText primary="This year" primaryTypographyProps={{style: text}}/>
       </ListItem>
     </div>
   );
