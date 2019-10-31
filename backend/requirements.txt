@@ -4,3 +4,4 @@ flask-sqlalchemy
 Flask-Migrate
 mysqlclient
 python-dotenv
+pytz

@@ -1,2 +1,5 @@
-def generate_crowdedness(packet_count, mac_count, universal_mac_count, location, time):
-    return 5
+from app.database import Device, Data
+
+
+def generate_crowdedness(device: Device, data: Data):
+    return data
