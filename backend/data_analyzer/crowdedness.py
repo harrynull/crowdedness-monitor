@@ -2,10 +2,10 @@ from app.database import Device, Data
 
 
 def generate_crowdedness(device: Device, data: Data):
-    max_mac = int(device.get_parameter("max"))
-    min_mac = int(device.get_parameter("min"))
-    total = int(device.get_parameter("total"))
-    cnt = int(device.get_parameter("cnt"))
+    max_mac = device.get_parameter("max")
+    min_mac = device.get_parameter("min")
+    total = device.get_parameter("total")
+    cnt = device.get_parameter("cnt")
     umac = int(data.universal_mac_count)
 
     if max_mac is None or umac > max_mac:
