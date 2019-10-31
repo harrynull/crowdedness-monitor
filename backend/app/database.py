@@ -36,7 +36,7 @@ class Device(db.Model):
         else:
             return None
 
-    def set_parameter(self, name: str, value: str):
+    def set_parameter(self, name: str, value):
         if self.parameters_obj is None:
             self.parameters_obj = json.loads(self.parameters)
         self.parameters_obj[name] = value
