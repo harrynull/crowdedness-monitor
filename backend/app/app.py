@@ -42,13 +42,13 @@ def register_device():
     return jsonify({"success": True, "token": token})
 
 
-# http://127.0.0.1:5000/manage/register_location?key=test&name=test_building&coordinates=123,123
+# http://127.0.0.1:5000/manage/register_location?key=test&name=test_building&abbr_name=test&coordinates=123,123
 @api.route('/manage/register_location', methods=["GET", "POST"])
 def register_location():
     if not check_authorization():
         return unauthorized_request()
 
-    db.session.add(Location(name=get_arg('name'),
+    db.session.add(Location(name=get_arg('name'), abbr_name=get_arg('abbr_name'),
                             coordinates=get_arg('coordinates')))
     db.session.commit()
     return jsonify({"success": True})
@@ -65,14 +65,13 @@ def report():
     device = Device.query.filter_by(token=token).first()
     if device is None:
         return jsonify({"success": False})
-    device_id = device.id
-    location_id = device.location_id
 
-    db.session.add(Data(time=current_time, device_id=device_id,
-                        packet_count=packet_count, mac_count=mac_count,
-                        universal_mac_count=universal_mac_count,
-                        crowdedness=generate_crowdedness(packet_count, mac_count, universal_mac_count,
-                                                         location_id, current_time)))
+    data = Data(time=current_time, device_id=device.id,
+                packet_count=packet_count, mac_count=mac_count,
+                universal_mac_count=universal_mac_count,
+                crowdedness=0)
+    data.crowdedness = generate_crowdedness(device, data)
+    db.session.add(data)
     db.session.commit()
     return jsonify({"success": True})
 
@@ -96,7 +95,8 @@ def get_current_data():
         location_object = location.export()
         location_object['devices'] = []
         for device in location.devices:
-            device_info = {'name': device.name, 'detailed_location': device.detailed_location, 'crowdedness': 0, 'last_updated': 0}
+            device_info = {'name': device.name, 'detailed_location': device.detailed_location, 'crowdedness': 0,
+                           'last_updated': 0}
             last_data: Data = device.get_last_data()
             if last_data is not None:
                 device_info['crowdedness'] = last_data.crowdedness
@@ -130,7 +130,7 @@ def admin():
     devices = Device.query.all()
     # TODO: should use a template instead. hack for debug purpose
 
-    content = """<style>body{padding:5% 10%;}td{text-align: center;}</style>"""\
+    content = """<style>body{padding:5% 10%;}td{text-align: center;}</style>""" \
               '<table style="width:100%">'
     content += """
     <tr><th>ID</th>
@@ -145,12 +145,15 @@ def admin():
         last_data = "None"
         if data is not None:
             from datetime import datetime
+            import pytz
+
             last_data = str.format("{} - {}/{} ({})", data.crowdedness, data.mac_count, data.universal_mac_count,
-                                   datetime.utcfromtimestamp(data.time).strftime('%Y-%m-%d %H:%M:%S'))
-        # TODO: localize the time?
+                                   datetime.fromtimestamp(data.time, pytz.timezone('Canada/Eastern')).strftime('%Y-%m-%d %H:%M:%S'))
+
         content += str.format("<tr><td>{}</td><td>{} - {}</td><td>{}</td><td>{}</td><td>{}</td>"
                               "<td>{}</td></tr>",
                               device.id, device.location.name, device.detailed_location,
                               device.name, device.mac_address, device.ip, last_data)
+
     content += '</table>'
     return content
