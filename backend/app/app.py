@@ -42,13 +42,13 @@ def register_device():
     return jsonify({"success": True, "token": token})
 
 
-# http://127.0.0.1:5000/manage/register_location?key=test&name=test_building&coordinates=123,123
+# http://127.0.0.1:5000/manage/register_location?key=test&name=test_building&abbr_name=test&coordinates=123,123
 @api.route('/manage/register_location', methods=["GET", "POST"])
 def register_location():
     if not check_authorization():
         return unauthorized_request()
 
-    db.session.add(Location(name=get_arg('name'),
+    db.session.add(Location(name=get_arg('name'), abbr_name=get_arg('abbr_name'),
                             coordinates=get_arg('coordinates')))
     db.session.commit()
     return jsonify({"success": True})
