@@ -66,7 +66,7 @@ class Panel extends Component {
                 {location.devices.length > 0 ? location.devices[0].crowdedness : 'N/A'}%
               </Typography>
               <Typography className={classes.busy} color="textSecondary">
-                Not Busy
+                {location.devices[0].crowdedness >= 80 ? "Very Busy" : location.devices[0].crowdedness >= 50 ? "Busy" : "Not Busy"}
               </Typography>
             </div>
             <DensityProgressBar
