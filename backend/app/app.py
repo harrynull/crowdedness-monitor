@@ -106,11 +106,14 @@ def get_current_data():
     return jsonify({"success": True, "data": data})
 
 
-# TODO: get historical/predictive data. Parameters: location_id, from_time, to_time
+# TODO: get historical/predictive data. Parameters: id, from, to
 @api.route('/data/time_range', methods=["GET", "POST"])
 @crossdomain(origin='*')
 def get_data_time_range():
-    return jsonify({"success": True, "data": {}})
+    data = {}
+    for d in Data.query.filter(get_arg('from') <= Data.time, Data.time <= get_arg('to'), Data.device_id == get_arg('id')):
+        data[d.time] = d.crowdedness
+    return jsonify({"success": True, "data": data})
 
 
 # Parameter: ip, token. device.ip = ip where device.token = token.
@@ -148,7 +151,8 @@ def admin():
             import pytz
 
             last_data = str.format("{} - {}/{} ({})", data.crowdedness, data.mac_count, data.universal_mac_count,
-                                   datetime.fromtimestamp(data.time, pytz.timezone('Canada/Eastern')).strftime('%Y-%m-%d %H:%M:%S'))
+                                   datetime.fromtimestamp(data.time, pytz.timezone('Canada/Eastern')).strftime(
+                                       '%Y-%m-%d %H:%M:%S'))
 
         content += str.format("<tr><td>{}</td><td>{} - {}</td><td>{}</td><td>{}</td><td>{}</td>"
                               "<td>{}</td></tr>",
