@@ -18,6 +18,8 @@ def unauthorized_request():
 
 
 def get_arg(name: str, default: str = ""):
+    json_obj = request.get_json(silent=True)
+    if json_obj is not None and name in json_obj: return json_obj[name]
     return request.values[name] if name in request.values else default
 
 
@@ -129,6 +131,8 @@ def update_ip():
 
 @api.route('/manage/')
 def admin():
+    if not check_authorization():
+       return unauthorized_request()
     # TODO: test cookie to authenticate
     devices = Device.query.all()
     # TODO: should use a template instead. hack for debug purpose

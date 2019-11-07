@@ -25,4 +25,4 @@ def generate_crowdedness(device: Device, data: Data):
     device.set_parameter("cnt", cnt)
     device.set_parameter("total", total)
 
-    return int((umac - min_mac) / (max_mac - min_mac) * 0.9 * 100)
+    return int(min(int(((umac - min_mac) / (max_mac - min_mac + 1) * 0.9 / 0.75) * 100), 100))
