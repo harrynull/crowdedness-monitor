@@ -118,6 +118,13 @@ def get_data_time_range():
     return jsonify({"success": True, "data": data})
 
 
+@api.route('/data/clustering')
+@crossdomain(origin='*')
+def clustering():
+    import json
+    return jsonify({"success": True, "data": json.load(open('data_analyzer/clustering.json'))})
+
+
 # Parameter: ip, token. device.ip = ip where device.token = token.
 @api.route('/data/ip', methods=["GET", "POST"])
 def update_ip():

@@ -5,3 +5,8 @@ Flask-Migrate
 mysqlclient
 python-dotenv
 pytz
+pandas
+numpy
+requests
+Cython
+scikit-learn
