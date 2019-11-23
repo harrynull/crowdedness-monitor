@@ -136,6 +136,20 @@ def update_ip():
     return jsonify({"success": True, "data": {"ip": device.ip}})
 
 
+# Parameter: key, device_id, name, value
+@api.route('/data/update_parameters', methods=["GET", "POST"])
+def update_parameters():
+    if not check_authorization():
+        return unauthorized_request()
+    device = Device.query.filter_by(id=get_arg("device_id")).first()
+    if device is None:
+        return jsonify({"success": False})
+    device.set_parameter(get_arg("name"), int(get_arg("value")))
+    db.session.commit()
+    return jsonify({"success": True, "data": device.parameters_obj})
+
+
+
 @api.route('/manage/')
 def admin():
     if not check_authorization():
