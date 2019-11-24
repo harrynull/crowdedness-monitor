@@ -108,7 +108,7 @@ def get_current_data():
     return jsonify({"success": True, "data": data})
 
 
-# TODO: get historical/predictive data. Parameters: id, from, to
+# from, to, id
 @api.route('/data/time_range', methods=["GET", "POST"])
 @crossdomain(origin='*')
 def get_data_time_range():
@@ -116,6 +116,13 @@ def get_data_time_range():
     for d in Data.query.filter(get_arg('from') <= Data.time, Data.time <= get_arg('to'), Data.device_id == get_arg('id')):
         data[d.time] = d.crowdedness
     return jsonify({"success": True, "data": data})
+
+
+# id, level = 0 (5 mins), 1 (10 mins), 2 (20 mins), (30 mins)
+@api.route('/data/predict', methods=["GET", "POST"])
+@crossdomain(origin='*')
+def predict():
+    return jsonify({"success": True, "data": [10, 20, 30, 40, 50]})
 
 
 @api.route('/data/clustering')
