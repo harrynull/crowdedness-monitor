@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import makeStyles from '@material-ui/core/styles/makeStyles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DensityProgressBar from "./DensityProgressBar";
 import {
@@ -13,30 +12,15 @@ import {
 } from "@material-ui/core";
 import {FONT_FAMILY} from "./App";
 import TrendChart from "./TrendChart";
-import TimeSelect from "./TimeSelect";
+import {ranges, TimeSelect} from "./TimeSelect";
 import withStyles from "@material-ui/core/styles/withStyles";
 import moment from "./moment-round";
-
-export const ranges = {
-  HOUR: 0,
-  HOUR6: 1,
-  HOUR12: 2,
-  DAY: 3,
-};
-
-// export const intervals = [
-//   0,
-//   2,
-//   5,
-//   5
-// ];
 
 class Panel extends Component {
   render () {
     const {classes} = this.props;
     const panels = this.props.locations.map((location) =>
       <ExpansionPanel
-        // expanded={true}
         key={location.id.toString()}
         className={classes.panel}>
         <ExpansionPanelSummary
@@ -52,10 +36,6 @@ class Panel extends Component {
             </Avatar>
           </Box>
           <Box className={classes.summaryBox}>
-            <Typography className={classes.subHeading} color="textSecondary">
-              {/*{location.isOpen ? "OPEN" : "CLOSED"}*/}
-              OPEN
-            </Typography>
             <Typography noWrap className={classes.heading}>
               {location.name}
             </Typography>
@@ -70,7 +50,6 @@ class Panel extends Component {
               </Typography>
             </div>
             <DensityProgressBar
-              // TODO Change Color
               color={"primary"}
               density={location.devices.length > 0 ? location.devices[0].crowdedness : 0}/>
           </Box>
@@ -89,28 +68,52 @@ class Panel extends Component {
                   selected={this.state.range}
                 />
                 <TrendChart
-                  // interval={this.state.range[location.id - 1] !== undefined ?
-                  //   intervals[this.state.range[location.id - 1]] : intervals[ranges.DAY]}
                   data={
                   createRange(
-                    this.state.range[location.id - 1] !== undefined ?
-                      this.state.range[location.id - 1] : ranges.DAY,
-                    this.props.details[location.id - 1]
-                  )}/>
+                    this.state.range[location.id-1] !== undefined ?
+                      this.state.range[location.id-1] : ranges.TODAY,
+                    this.props.details[location.id-1], this.props.cluster[location.id]
+                  )}
+                  hasCluster={this.state.range[location.id-1] === undefined ||
+                  this.state.range[location.id-1] === ranges.TODAY}
+                />
               </Box>
             </Box>
           </Box>
         </ExpansionPanelDetails>
       </ExpansionPanel>
     );
-    return (
-      <ul className={classes.mul}>{panels}</ul>
-    );
+    return (<ul className={classes.mul}>{panels}</ul>);
   }
 
-  state = {
-    range: [],
-  };
+  state = {range: []};
+}
+
+function aggregate_today_cluster_data(raw, cluster) {
+  let data = [];
+  let aggregation = {};
+  let clusters = {};
+  let cnt = {};
+  let hours = moment().startOf('day').diff(moment.now(),'hours');
+  for (let i = 0; i < 24; i++) {
+    let k = (i<10  ? "0" + i.toString() : i.toString()) + ":00";
+    if (!clusters[k]) clusters[k]=0;
+    clusters[k] += cluster[(moment().weekday()+6) % 7][i];
+  }
+  for (let key of Object.keys(raw).slice(12*hours)) {
+    let k = moment.unix(key).round(60,'minutes').format('HH:mm');
+    if (!aggregation[k]) aggregation[k]=cnt[k]=0;
+    aggregation[k] += raw[key];
+    cnt[k] += 1;
+  }
+  for (let key of Object.keys(clusters))
+    data.push(
+      createData(
+        key,
+        Math.round(aggregation[key]/cnt[key]),
+        clusters[key]
+      ));
+  return data;
 }
 
 function aggregate_data(raw, hours, roundMins) {
@@ -123,27 +126,36 @@ function aggregate_data(raw, hours, roundMins) {
     aggregation[k] += raw[key];
     cnt[k] += 1;
   }
-  for (let key of Object.keys(aggregation)){
-    data.push(createData(key, Math.round(aggregation[key]/cnt[key])));
-  }
+  for (let key of Object.keys(aggregation))
+    data.push(
+      createData(
+        key,
+        Math.round(aggregation[key]/cnt[key]),
+        null
+      ));
   return data;
 }
 
-function createData (time, Density) {
-  return {time, Density: Density};
+function createData (time, Density, Cluster) {
+  return {
+    time,
+    Density: Density,
+    Prediction: Cluster,
+  };
 }
 
-function createRange (range, raw) {
+function createRange (range, raw, cluster) {
   if (!raw) return;
   switch (range) {
+    case ranges.TODAY:
+      return aggregate_today_cluster_data(raw, cluster);
     case ranges.HOUR:
+      // TODO: NEXT HOUR PREDICTION
       return aggregate_data(raw, 1, 5);
     case ranges.HOUR6:
       return aggregate_data(raw, 6, 10);
     case ranges.HOUR12:
       return aggregate_data(raw, 12, 20);
-    case ranges.DAY:
-      return aggregate_data(raw, 24, 30);
     default: return [];
   }
 }

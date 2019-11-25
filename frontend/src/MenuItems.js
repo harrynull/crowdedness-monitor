@@ -21,12 +21,12 @@ export function MainListItems () {
         </ListItemIcon>
         <ListItemText primary="Dashboard" primaryTypographyProps={{style: text}}/>
       </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <BarChartIcon/>
-        </ListItemIcon>
-        <ListItemText primary="Reports" primaryTypographyProps={{style: text}}/>
-      </ListItem>
+      {/*<ListItem button>*/}
+      {/*  <ListItemIcon>*/}
+      {/*    <BarChartIcon/>*/}
+      {/*  </ListItemIcon>*/}
+      {/*  <ListItemText primary="Reports" primaryTypographyProps={{style: text}}/>*/}
+      {/*</ListItem>*/}
     </div>
   );
 }

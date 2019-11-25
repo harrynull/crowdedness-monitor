@@ -43,11 +43,6 @@ export default function PrimaryAppBar () {
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             Crowdedness Monitor
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={0} color="secondary">
-              <NotificationsIcon/>
-            </Badge>
-          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -64,8 +59,8 @@ export default function PrimaryAppBar () {
         </div>
         <Divider/>
         <List>{MainListItems()}</List>
-        <Divider/>
-        <List>{SecondaryListItems()}</List>
+        {/*<Divider/>*/}
+        {/*<List>{SecondaryListItems()}</List>*/}
       </Drawer>
     </div>
   );
@@ -126,6 +121,7 @@ const useStyles = makeStyles(theme => ({
     fontWeight: theme.typography.fontWeightMedium,
     [theme.breakpoints.only('xs')]: {
       paddingLeft: 0,
+      marginRight: 40,
       textAlign: 'center',
     }
   },
