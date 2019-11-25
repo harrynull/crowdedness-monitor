@@ -33,6 +33,9 @@ class Device(db.Model):
     def get_last_data(self):
         return Data.query.filter_by(device_id=self.id).order_by(Data.time.desc()).first()
 
+    def get_last_12_data(self):
+        return Data.query.filter_by(device_id=self.id).order_by(Data.time.desc()).limit(12)
+
     def get_parameter(self, name: str):
         if self.parameters_obj is None:
             self.parameters_obj = json.loads(self.parameters)

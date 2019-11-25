@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, make_response, current_app, request
 
 from app.crossdomain import crossdomain
 from app.database import Data, db, Device, Location
+from data_analyzer import prediction
 from data_analyzer.crowdedness import generate_crowdedness
 
 api = Blueprint('api', __name__)
@@ -122,7 +123,7 @@ def get_data_time_range():
 @api.route('/data/predict', methods=["GET", "POST"])
 @crossdomain(origin='*')
 def predict():
-    return jsonify({"success": True, "data": [10, 20, 30, 40, 50]})
+    return jsonify({"success": True, "data": prediction.predict(get_arg('id'), int(time.time()))})
 
 
 @api.route('/data/clustering')
