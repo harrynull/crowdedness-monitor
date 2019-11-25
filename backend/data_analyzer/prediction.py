@@ -15,6 +15,9 @@ def predict(device_id: int, time_now: int):
     device = Device.query.filter_by(id=device_id).first()
     last_12_data = [data.universal_mac_count for data in device.get_last_12_data()]
     X = pd.DataFrame(np.array(last_12_data + feature_weekday + feature_hour + feature_minute)).T
-    mac_counts = [int(joblib.load('models/gbm_' + str(device_id) + '_' + str(i) + '_model.pkl').predict(X)[0])
-                  for i in range(1, 13)]
+    try:
+        mac_counts = [int(joblib.load('models/gbm_' + str(device_id) + '_' + str(i) + '_model.pkl').predict(X)[0])
+                     for i in range(1, 13)]
+    except:
+        return []
     return [generate_crowdedness_from_universal_mac_count(device, mac) for mac in mac_counts]
