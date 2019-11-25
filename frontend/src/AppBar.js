@@ -4,14 +4,12 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import clsx from "clsx";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
-import {MainListItems, SecondaryListItems} from "./MenuItems";
+import {MainListItems} from "./MenuItems";
 import Drawer from "@material-ui/core/Drawer";
 import {FONT_FAMILY} from "./App";
 
@@ -59,8 +57,6 @@ export default function PrimaryAppBar () {
         </div>
         <Divider/>
         <List>{MainListItems()}</List>
-        {/*<Divider/>*/}
-        {/*<List>{SecondaryListItems()}</List>*/}
       </Drawer>
     </div>
   );
