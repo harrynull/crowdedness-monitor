@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import update from 'immutability-helper';
 import withStyles from "@material-ui/core/styles/withStyles";
-import Copyright from "./Copyright";
 import PrimaryAppBar from "./AppBar";
 import Panel from "./Panel";
 import './index.css'
@@ -11,6 +9,7 @@ import {
   Container,
 } from '@material-ui/core';
 import moment from "moment";
+import Copyright from "./Copyright";
 
 export const FONT_FAMILY = 'Rubik';
 
@@ -20,11 +19,13 @@ class App extends Component {
   state = {
     data: [],
     details: [],
+    cluster: {},
+    nextHour: [],
   };
 
   componentDidMount () {
     this.fetchData();
-    this.timer = setInterval(() => this.fetchData(), 30000);
+    setInterval(() => this.fetchData(), 30000);
   }
 
   fetchData () {
@@ -36,13 +37,40 @@ class App extends Component {
       method: "GET"
     }).then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         this.setState({data: responseData.data});
-        // this.setState({details: []});
+        this.fetchClustering();
         for (let loc in this.state.data) {
-          console.log(loc);
+          this.fetchNextHour(this.state.data[loc].id);
           this.fetchDetails(this.state.data[loc].id);
         }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  fetchClustering () {
+    fetch('https://harrynull.tech/cm/data/clustering', {
+      method: "GET"
+    }).then((response) => response.json())
+      .then((responseData) => {
+        this.setState({cluster: responseData.data});
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  fetchNextHour (id) {
+    let form = new FormData();
+    form.append("id", id);
+    fetch('https://harrynull.tech/cm/data/predict', {
+      method: 'post',
+      body: form
+    }).then((response) => response.json())
+      .then((responseData) => {
+        this.state.nextHour[id-1] = responseData.data;
+        this.forceUpdate();
       })
       .catch((error) => {
         console.error(error);
@@ -59,7 +87,6 @@ class App extends Component {
       body: form
     }).then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
         this.state.details[id-1] = responseData.data;
         this.forceUpdate();
       })
@@ -77,9 +104,13 @@ class App extends Component {
         <main className={classes.content}>
           <div className={classes.appBarSpacer}/>
           <Container maxWidth="md" className={classes.container}>
-            <Panel locations={this.state.data} details={this.state.details}/>
+            <Panel locations={this.state.data}
+                   details={this.state.details}
+                   cluster={this.state.cluster}
+                   nextHour={this.state.nextHour}
+            />
           </Container>
-          {/*<Copyright/>*/}
+          <Copyright/>
         </main>
       </div>
     );

@@ -33,7 +33,7 @@ const StyledToggleButtonGroup = withStyles(theme => ({
   },
 }))(ToggleButtonGroup);
 
-export default function CustomizedDividers () {
+export default function PastFutureToggle () {
   const [alignment, setAlignment] = React.useState('left');
   const [formats, setFormats] = React.useState(() => ['italic']);
 

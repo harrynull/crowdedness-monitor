@@ -2,20 +2,25 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import {ranges} from "./Panel";
+
+export const ranges = {
+  TODAY: 0,
+  HOUR: 1,
+  HOUR6: 2,
+  HOUR12: 3,
+};
 
 const options = [
-  '1 Hour',
-  '6 Hours',
-  '12 Hours',
-  '1 Day',
+  'Today',
+  'Next Hour',
+  'Last 6 Hours',
+  'Last 12 Hours',
 ];
 
-export default function TimeSelect(props) {
+export function TimeSelect(props) {
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  // CHANGE HERE FOR DEFAULT OPTION
-  const [selectedIndex, setSelectedIndex] = React.useState(3);
+  const [selectedIndex, setSelectedIndex] = React.useState(ranges.TODAY);
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -27,7 +32,7 @@ export default function TimeSelect(props) {
     setAnchorEl(null);
   };
 
-  const handleClose = (range) => {
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
