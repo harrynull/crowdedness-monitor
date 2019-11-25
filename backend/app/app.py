@@ -18,6 +18,8 @@ def unauthorized_request():
 
 
 def get_arg(name: str, default: str = ""):
+    json_obj = request.get_json(silent=True)
+    if json_obj is not None and name in json_obj: return json_obj[name]
     return request.values[name] if name in request.values else default
 
 
@@ -106,11 +108,28 @@ def get_current_data():
     return jsonify({"success": True, "data": data})
 
 
-# TODO: get historical/predictive data. Parameters: location_id, from_time, to_time
+# from, to, id
 @api.route('/data/time_range', methods=["GET", "POST"])
 @crossdomain(origin='*')
 def get_data_time_range():
-    return jsonify({"success": True, "data": {}})
+    data = {}
+    for d in Data.query.filter(get_arg('from') <= Data.time, Data.time <= get_arg('to'), Data.device_id == get_arg('id')):
+        data[d.time] = d.crowdedness
+    return jsonify({"success": True, "data": data})
+
+
+# id, level = 0 (5 mins), 1 (10 mins), 2 (20 mins), (30 mins)
+@api.route('/data/predict', methods=["GET", "POST"])
+@crossdomain(origin='*')
+def predict():
+    return jsonify({"success": True, "data": [10, 20, 30, 40, 50]})
+
+
+@api.route('/data/clustering')
+@crossdomain(origin='*')
+def clustering():
+    import json
+    return jsonify({"success": True, "data": json.load(open('data_analyzer/clustering.json'))})
 
 
 # Parameter: ip, token. device.ip = ip where device.token = token.
@@ -124,8 +143,24 @@ def update_ip():
     return jsonify({"success": True, "data": {"ip": device.ip}})
 
 
+# Parameter: key, device_id, name, value
+@api.route('/data/update_parameters', methods=["GET", "POST"])
+def update_parameters():
+    if not check_authorization():
+        return unauthorized_request()
+    device = Device.query.filter_by(id=get_arg("device_id")).first()
+    if device is None:
+        return jsonify({"success": False})
+    device.set_parameter(get_arg("name"), int(get_arg("value")))
+    db.session.commit()
+    return jsonify({"success": True, "data": device.parameters_obj})
+
+
+
 @api.route('/manage/')
 def admin():
+    if not check_authorization():
+       return unauthorized_request()
     # TODO: test cookie to authenticate
     devices = Device.query.all()
     # TODO: should use a template instead. hack for debug purpose
@@ -148,7 +183,8 @@ def admin():
             import pytz
 
             last_data = str.format("{} - {}/{} ({})", data.crowdedness, data.mac_count, data.universal_mac_count,
-                                   datetime.fromtimestamp(data.time, pytz.timezone('Canada/Eastern')).strftime('%Y-%m-%d %H:%M:%S'))
+                                   datetime.fromtimestamp(data.time, pytz.timezone('Canada/Eastern')).strftime(
+                                       '%Y-%m-%d %H:%M:%S'))
 
         content += str.format("<tr><td>{}</td><td>{} - {}</td><td>{}</td><td>{}</td><td>{}</td>"
                               "<td>{}</td></tr>",
