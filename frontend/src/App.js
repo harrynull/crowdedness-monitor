@@ -20,6 +20,7 @@ class App extends Component {
     data: [],
     details: [],
     cluster: {},
+    nextHour: [],
   };
 
   componentDidMount () {
@@ -39,6 +40,7 @@ class App extends Component {
         this.setState({data: responseData.data});
         this.fetchClustering();
         for (let loc in this.state.data) {
+          this.fetchNextHour(this.state.data[loc].id);
           this.fetchDetails(this.state.data[loc].id);
         }
       })
@@ -53,6 +55,22 @@ class App extends Component {
     }).then((response) => response.json())
       .then((responseData) => {
         this.setState({cluster: responseData.data});
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  fetchNextHour (id) {
+    let form = new FormData();
+    form.append("id", id);
+    fetch('https://harrynull.tech/cm/data/predict', {
+      method: 'post',
+      body: form
+    }).then((response) => response.json())
+      .then((responseData) => {
+        this.state.nextHour[id-1] = responseData.data;
+        this.forceUpdate();
       })
       .catch((error) => {
         console.error(error);
@@ -88,7 +106,9 @@ class App extends Component {
           <Container maxWidth="md" className={classes.container}>
             <Panel locations={this.state.data}
                    details={this.state.details}
-                   cluster={this.state.cluster}/>
+                   cluster={this.state.cluster}
+                   nextHour={this.state.nextHour}
+            />
           </Container>
           <Copyright/>
         </main>
