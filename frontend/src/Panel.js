@@ -93,26 +93,19 @@ class Panel extends Component {
 
 function aggregate_today_cluster_data (raw, cluster) {
   let data = [];
-  let aggregation = {};
   let clusters = {};
-  let cnt = {};
-  let hours = moment().startOf('day').diff(moment.now(), 'hours');
+  let hours = -moment().startOf('day').diff(moment.now(), 'hours');
+  let aggregation = aggregate_raw_data(raw, hours, 60);
   for (let i = 0; i < 24; i++) {
     let k = (i < 10 ? "0" + i.toString() : i.toString()) + ":00";
     if (!clusters[k]) clusters[k] = 0;
     clusters[k] += cluster[(moment().weekday() + 6) % 7][i];
   }
-  for (let key of Object.keys(raw).slice(12 * hours)) {
-    let k = moment.unix(key).round(60, 'minutes').format('HH:mm');
-    if (!aggregation[k]) aggregation[k] = cnt[k] = 0;
-    aggregation[k] += raw[key];
-    cnt[k] += 1;
-  }
   for (let key of Object.keys(clusters))
     data.push(
       createData(
         key,
-        Math.round(aggregation[key] / cnt[key]),
+        aggregation[key],
         clusters[key]
       ));
   return data;
@@ -141,22 +134,41 @@ function aggregate_next_hour_data (raw, nextHour) {
 
 function aggregate_data (raw, hours, roundMins) {
   let data = [];
-  let aggregation = {};
-  let cnt = {};
-  for (let key of Object.keys(raw).slice(-12 * hours)) {
-    let k = moment.unix(key).round(roundMins, 'minutes').format('HH:mm');
-    if (!aggregation[k]) aggregation[k] = cnt[k] = 0;
-    aggregation[k] += raw[key];
-    cnt[k] += 1;
-  }
+  let aggregation = aggregate_raw_data(raw, hours, roundMins);
   for (let key of Object.keys(aggregation))
     data.push(
       createData(
         key,
-        Math.round(aggregation[key] / cnt[key]),
+        aggregation[key],
         null,
         false,
       ));
+  return data;
+}
+
+function aggregate_raw_data (raw, hours, roundMins) {
+  let data = {};
+  let aggregation = {};
+  let cnt = {};
+  let keys = {};
+  for (let key of Object.keys(raw).slice(-12 * hours)) {
+    let m = moment.unix(key).round(roundMins, 'minutes');
+    if (moment(m).isAfter(moment().startOf('day'))) {
+      let k = m.format('HH:mm');
+      if (!keys[k]) keys[k] = cnt[k]=0;
+      keys[k] += raw[key];
+      cnt[k] += 1;
+    }
+  }
+  let now = moment.now();
+  for (let i = 0; i < (60 / roundMins) * hours; i++) {
+    now = moment(now).subtract(roundMins, 'm');
+    let k = moment(now).round(roundMins, 'minutes').format('HH:mm');
+    if (!keys[k]) aggregation[k] = 0;
+    else aggregation[k] = keys[k];
+  }
+  for (let key of Object.keys(aggregation).reverse())
+    data[key] = (Math.round(aggregation[key] / cnt[key]));
   return data;
 }
 
