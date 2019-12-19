@@ -67,6 +67,7 @@ flask run
 Recommended IDE: PyCharm Professional
 
 ### Frontend
-[Frontend](https://git.uwaterloo.ca/STAZZ/crowdedness-monitor/tree/master/frontend)
+[Frontend](https://github.com/harrynull/crowdedness-monitor/tree/master/frontend)
 
 ## License
+[The MIT License](https://github.com/harrynull/crowdedness-monitor/blob/master/LICENSE).
